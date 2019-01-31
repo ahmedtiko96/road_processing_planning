@@ -3,5 +3,7 @@ place_name: 'leganes,Spain'
 
 grid_map_size: 500
 
-map_frame: path_frame
+map_frame: map
 
+# +ve to the right and -ve to the left. value is in meters
+lane_shift: 2
