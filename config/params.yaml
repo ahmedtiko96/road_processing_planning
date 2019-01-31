@@ -6,4 +6,8 @@ grid_map_size: 500
 map_frame: map
 
 # +ve to the right and -ve to the left. value is in meters
+<<<<<<< HEAD
 lane_shift: 2
+=======
+lane_shift: 2
+>>>>>>> 6a6d8c735a2860140144d62e66f7f95a0f1997a0
