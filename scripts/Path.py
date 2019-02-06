@@ -330,17 +330,17 @@ class path_generator:
 		fig, ax = plt.subplots()
 		self._edges.plot(ax=ax)
 
-		ax.plot(self._startx,self._starty, 'r+')
+		ax.plot(self._startx,self._starty, 'k+')
 		ax.plot(self._goalx,self._goaly, 'r+')
 
 
 		for m in range(0,len(self._path.poses)):
 			plt.plot(self._path.poses[m].pose.position.x,self._path.poses[m].pose.position.y)
-			
+
 			ax.plot(self._path.poses[m].pose.position.x,self._path.poses[m].pose.position.y ,'ro')
 
 
-		ax.plot(self._path.poses[0].pose.position.x,self._path.poses[0].pose.position.y,'b+')
+		ax.plot(self._path.poses[0].pose.position.x,self._path.poses[0].pose.position.y,'k+')
 		ax.plot(self._path.poses[len(self._path.poses)-1].pose.position.x,
 			self._path.poses[len(self._path.poses)-1].pose.position.y,'b+')
 
@@ -598,6 +598,10 @@ class path_generator:
 			x, y = line.split(',')
 			xarr.append(float(x))
 			yarr.append(float(y))
+
+		if rospy.get_param("reverse_path") == True:
+			xarr = list(reversed(xarr))
+			yarr = list(reversed(yarr))
 
 		new_path = Path()
 

@@ -8,4 +8,6 @@ map_frame: map
 # +ve to the right and -ve to the left. value is in meters
 lane_shift: 2
 
-fake_path_dir: '/home/mustafaismail/Documents/GP/catkin_ws/src/osm_path_planning/scripts/gps_path.txt'
+fake_path_dir: '/home/mustafaismail/Documents/GP/catkin_ws/src/osm_path_planning/fake_paths/path_5_BU.txt'
+
+reverse_path: False
