@@ -7,6 +7,7 @@ import rospy
 import os
 import utm
 import osmnx as ox
+import tf
 
 class local_map:
 
@@ -63,6 +64,8 @@ class local_map:
 		self.file_path_local_map = self.file_path[:len (self.file_path) -7] + 'local_maps/'
 
 		self.map_load_range = rospy.get_param("grid_map_size")/2
+		self.br = tf.TransformBroadcaster()
+		self.br1 = tf.TransformBroadcaster()
 
 		self.first_time_flag = 1
 
@@ -100,6 +103,15 @@ class local_map:
 
 		self._curr_lat=self.curr.latitude
 		self._curr_lon=self.curr.longitude
+
+		self._curr_UTMx, self._curr_UTMy, _, _ = utm.from_latlon(self._curr_lat, self._curr_lon)
+		rospy.loginfo(self._curr_UTMx)
+		rospy.loginfo(self._curr_UTMy)
+		self.br.sendTransform((((-1*self._curr_UTMx)+500)/1000, ((-1*self._curr_UTMy)/1000), 0),
+			tf.transformations.quaternion_from_euler(0, 0, 1), rospy.Time.now(),"local_map","map")
+		
+		# self.br1.sendTransform((300,300,0),tf.transformations.quaternion_from_euler(0,0,0),
+		#  rospy.Time.now(),"vehicle","map")
 		if(math.isnan(self.curr.latitude)==False):
 			
 			self._curr_UTMx, self._curr_UTMy, _, _ = utm.from_latlon(self._curr_lat, self._curr_lon)
@@ -115,12 +127,15 @@ class local_map:
 				self._old_UTMx=self._curr_UTMx
 				self._old_UTMy=self._curr_UTMy
 				self.curr_gps_point=(self._curr_lat,self._curr_lon)
-				north, south, east, west= ox.bbox_from_point(self.curr_gps_point, distance=rospy.get_param("grid_map_size"))
+				north, south, east, west= ox.bbox_from_point(self.curr_gps_point,
+					distance= rospy.get_param("grid_map_size"))
 				url_name = self.url_base + str(west) + "," + str (south) + "," + str(east) + "," + str(north)
 				rospy.loginfo("downloading ...")
 
 				urllib.urlretrieve(url_name, self.file_path_local_map + 'local_map.xml')
 
+
+				
 				self.first_time_flag = 0
 
 			if dist > self.map_load_range:
@@ -130,8 +145,10 @@ class local_map:
 				self._old_UTMx=self._curr_UTMx
 				self._old_UTMy=self._curr_UTMy
 				self.curr_gps_point=(self._curr_lat,self._curr_lon)
-				north, south, east, west= ox.bbox_from_point(self.curr_gps_point, distance=rospy.get_param("grid_map_size"))
+				north, south, east, west= ox.bbox_from_point(self.curr_gps_point, 
+					distance=rospy.get_param("grid_map_size"))
 				url_name = self.url_base + str(west) + "%2C" + str (south) + "%2C" + str(east) + "%2C" + str(north)
+				
 				rospy.loginfo("downloading ...")
 
 				urllib.urlretrieve(url_name, self.file_path_local_map + 'local_map.xml')
